@@ -1,8 +1,8 @@
 # House Price Prediction using Multiple Regression, Random Forest and XGBoost
 
-## Project Overview
 
-This project builds predictive models to estimate house sale prices using the **House Prices: Advanced Regression Techniques** dataset from Kaggle.
+## Project Overview
+This project builds multiple regression and machine learning models to predict house prices using the **House Prices: Advanced Regression Techniques** dataset from Kaggle. The goal is to understand the impact of different property features on house prices and compare the performance of statistical and machine learning models.
 
 The objective of this project is to apply **statistical modeling and machine learning techniques** to identify the key factors affecting house prices and build accurate prediction models.
 
@@ -10,164 +10,129 @@ The project includes:
 
 - Exploratory Data Analysis (EDA)
 - Feature engineering
-- Multicollinearity detection using VIF
-- Stepwise multiple regression
-- Random Forest regression
-- XGBoost regression
-- Model evaluation and comparison
+- Multicollinearity reduction
+- Regression diagnostics
+- Tree-based machine learning models
+- Regularization and hyperparameter tuning
+- Model performance comparison
 
 ---
 
 ## Dataset
+Dataset: **House Prices: Advanced Regression Techniques(train.csv)**
 
-The dataset contains **1460 observations and 80 explanatory variables** describing residential homes.
+The dataset contains information about residential homes in Ames, Iowa. It includes **79 explanatory variables** describing different aspects of houses.
 
-The target variable is:
-
-**SalePrice** – the property's sale price in dollars.
-
-The dataset includes information such as:
+Examples of features:
 
 - Lot size
-- Neighborhood
-- House quality
+- Overall quality of the house
 - Living area
-- Basement area
 - Garage size
-- Exterior material
-- Construction year
-- Remodeling information
+- Basement area
+- Neighborhood
+- Exterior materials
+
+Target Variable:
+
+`SalePrice` – Final sale price of the house.
+
+To reduce skewness, the target variable was transformed using a **log transformation**.
 
 ---
 
 ## Project Workflow
 
 ### 1. Data Loading
+The dataset is loaded using pandas and initial inspection is performed to understand structure, datatypes and summary statistics.
 
-The dataset is loaded using **Pandas** and initial inspection is performed to understand:
+### 2. Exploratory Data Analysis
+EDA includes:
 
-- dataset dimensions
-- variable types
-- summary statistics
-
----
-
-### 2. Exploratory Data Analysis (EDA)
-
-EDA is performed to understand the structure of the data and relationships between variables.
-
-Techniques used:
-
-- Histogram of the target variable
+- Distribution of sale prices
 - Skewness analysis
-- Log transformation of SalePrice
-- Scatter plots for numerical predictors
+- Scatter plots between important numerical features and price
 - Boxplots for categorical variables
 - Correlation heatmap
 
----
+### 3. Data Cleaning
+Missing values were handled using:
 
-### 3. Data Preprocessing
-
-#### Missing Value Imputation
-
-Missing values are handled using:
-
-- **Median imputation** for numerical variables
-- **Mode imputation** for categorical variables
-
-#### Target Transformation
-
-The target variable is **log transformed** to reduce skewness and stabilize variance.
-SalePrice_log = log(SalePrice)
-
-
----
+- Median imputation for numerical variables
+- Mode imputation for categorical variables
 
 ### 4. Feature Engineering
-
-Some categorical variables with many levels were grouped to reduce dimensionality.
+Several categorical features with many levels were grouped to reduce dimensionality.
 
 Examples:
 
-- Exterior material grouped into **top 5 categories**
-- Neighborhood grouped into **top 8 categories**
-
-This helps reduce sparsity in dummy variables.
-
----
+- Exterior types grouped into top categories
+- Neighborhood categories reduced
+- Dummy encoding applied to categorical variables
 
 ### 5. Outlier Detection
+Outliers were detected using the **IQR method** and removed for the variable:
 
-Outliers in **GrLivArea** were removed using the **Interquartile Range (IQR) method**.
-Lower Bound = Q1 − 1.5 × IQR
-Upper Bound = Q3 + 1.5 × IQR
+`GrLivArea`
 
-Observations outside this range were removed.
+### 6. Multicollinearity Handling
+Variance Inflation Factor (VIF) was used to detect multicollinearity among numerical variables.
 
----
-
-### 6. Multicollinearity Detection
-
-Multicollinearity among predictors was evaluated using **Variance Inflation Factor (VIF)**.
-
-Variables with **VIF greater than 5** were iteratively removed to ensure stable regression estimates.
-
----
+A custom iterative function was implemented to remove variables with high VIF values.
 
 ### 7. Multiple Linear Regression
+A statistical model was built using **statsmodels OLS**.
 
-A **stepwise backward elimination approach** was used to select statistically significant predictors.
+Backward elimination was applied using p-values to remove insignificant variables.
 
-Model diagnostics were performed including:
+Model diagnostics performed:
 
-- Breusch–Pagan test for heteroskedasticity
-- Jarque–Bera test for normality of residuals
-- Ramsey RESET test for model specification
-- Residual analysis plots
+- Breusch–Pagan test (heteroskedasticity)
+- Jarque–Bera test (normality)
+- Ramsey RESET test (model specification)
+- Residual analysis
 
----
+### 8. Machine Learning Models
 
-### 8. Random Forest Regression
+Three machine learning models were trained:
 
-A **Random Forest Regressor** was implemented using scikit-learn.
+1. Random Forest Regressor  
+2. XGBoost Regressor  
+3. Regularized versions of both models using hyperparameter tuning
 
-Key model characteristics:
+### 9. Hyperparameter Tuning
+Hyperparameter tuning was performed using **RandomizedSearchCV** to improve model generalization.
 
-- 500 decision trees
-- Parallel processing enabled
-- Feature importance analysis
+For Random Forest:
 
-Random Forest helps capture **non-linear relationships and complex interactions** between predictors.
+- max_depth
+- min_samples_split
+- min_samples_leaf
+- max_features
 
----
+For XGBoost:
 
-### 9. XGBoost Regression
+- learning_rate
+- max_depth
+- subsample
+- colsample_bytree
+- reg_alpha (L1 regularization)
+- reg_lambda (L2 regularization)
 
-An **XGBoost Regressor** was used to improve predictive performance.
-
-Model parameters:
-
-- n_estimators = 500
-- learning_rate = 0.05
-- max_depth = 6
-- subsample = 0.8
-- colsample_bytree = 0.8
-
-XGBoost is a powerful **gradient boosting algorithm** widely used in machine learning competitions.
-
----
-
-## Model Evaluation
-
+### 10. Model Evaluation
 Models were evaluated using:
 
-- **RMSE (Root Mean Squared Error)**
-- **MAE (Mean Absolute Error)**
+- Root Mean Squared Error (RMSE)
+- Mean Absolute Error (MAE)
 
-These metrics measure prediction accuracy on unseen test data.
+## The final notebook compares the performance of:
 
----
+- Multiple Linear Regression
+- Random Forest
+- XGBoost
+- Regularized Random Forest
+- Regularized XGBoost
+
 
 ## Feature Importance
 
